@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Infinity AI | Çağrı ATAV</title>
+    <title>Infinity AI | Musab</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,12 +11,11 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', system-ui, sans-serif; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: #fff; overflow: hidden; }
 
-        /* --- PREMİUM AÇILIŞ --- */
+        /* --- SİHİRLİ AÇILIŞ ANİMASYONU --- */
         #boot { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 1s ease; }
         .boot-wrapper { position: relative; width: 140px; height: 140px; display: flex; justify-content: center; align-items: center; }
         .boot-ring { position: absolute; width: 100%; height: 100%; border: 3px solid #111; border-top: 3px solid var(--main); border-radius: 50%; animation: spin 0.6s linear infinite, splitBubble 1.2s ease 2.5s forwards; }
         .boot-inf-icon { position: absolute; width: 90px; height: 90px; background-image: url('icon.png'); background-size: contain; background-repeat: no-repeat; opacity: 0; transform: scale(0.5); animation: infReveal 1.5s ease-out 3s forwards; z-index: 10001; }
-
         @keyframes splitBubble { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0); opacity: 0; visibility: hidden; } }
         @keyframes infReveal { 0% { opacity: 0; transform: scale(0.5); filter: blur(8px); } 40% { opacity: 1; transform: scale(1); filter: blur(0px); } 100% { opacity: 0; transform: scale(1.1); filter: blur(3px); visibility: hidden; } }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -26,13 +25,12 @@
         .inf-brand { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.04); padding: 6px 22px; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; letter-spacing: 3px; color: #555; z-index: 1001; text-transform: uppercase; }
         #nebula { position: fixed; top: 0; left: 0; z-index: 1; background: #000; pointer-events: none; }
         
-        .ai-section { margin: 20px 25px 100px 25px; background: rgba(8, 8, 8, 0.98); border: 1px solid #1a1a1a; border-radius: 40px; height: 600px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.9); }
+        .ai-section { margin: 20px 25px 100px 25px; background: rgba(8, 8, 8, 0.98); border: 1px solid #1a1a1a; border-radius: 40px; height: 620px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.9); }
         #chat-flow { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
         #chat-flow::-webkit-scrollbar { display: none; }
         .bubble { padding: 18px 22px; border-radius: 25px; max-width: 88%; font-size: 15px; line-height: 1.6; }
         .ai-bub { background: rgba(255, 0, 85, 0.06); color: #ffcccc; align-self: flex-start; border-left: 5px solid var(--main); }
         .user-bub { background: #1a1a1a; align-self: flex-end; border-right: 5px solid #fff; }
-        .ai-img { width: 100%; border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255, 0, 85, 0.3); }
 
         .input-zone { padding: 20px 25px; background: #050505; display: flex; gap: 10px; border-top: 1px solid #111; align-items: center; position: relative; z-index: 1010; }
         #userInput { flex-grow: 1; background: #000; border: 1px solid #222; color: #fff; padding: 15px 22px; border-radius: 35px; outline: none; font-size: 16px; }
@@ -42,23 +40,16 @@
 <body>
 
     <div class="inf-brand">with Infinity™</div>
-
-    <div id="boot">
-        <div class="boot-wrapper">
-            <div class="boot-ring"></div>
-            <div class="boot-inf-icon"></div>
-        </div>
-    </div>
-
+    <div id="boot"><div class="boot-wrapper"><div class="boot-ring"></div><div class="boot-inf-icon"></div></div></div>
     <canvas id="nebula"></canvas>
 
     <div id="mainContent">
         <div class="ai-section">
             <div id="chat-flow">
-                <div class="bubble ai-bub">Merhaba Efendim. Tüm sistemler, selamlaşma ve analiz çekirdekleri tamamen onarıldı. Sizi dinliyorum.</div>
+                <div class="bubble ai-bub">Selam Musab! Görsel motoru kaldırıldı, sistem sadeleşti. Seni dinliyorum.</div>
             </div>
             <div class="input-zone">
-                <input type="text" id="userInput" placeholder="Mesaj yazın..." autofocus autocomplete="off">
+                <input type="text" id="userInput" placeholder="Mesaj yaz..." autofocus autocomplete="off">
                 <button class="send-btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -73,61 +64,40 @@
             }, 4500); 
         };
 
-        const canvas = document.getElementById('nebula');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        let w, h;
+        const canvas = document.getElementById('nebula'); const ctx = canvas.getContext('2d'); let stars = []; let w, h;
         function init() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; stars=[]; for(let i=0; i<400; i++) stars.push({x:Math.random()*w, y:Math.random()*h, z:Math.random()*w, s:Math.random()*0.4}); }
         function render() { ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff'; stars.forEach(s => { let px=(s.x-w/2)*(w/s.z)+w/2; let py=(s.y-h/2)*(w/s.z)+h/2; let r=(w/s.z)*0.7; if(px>0 && px<w && py>0 && py<h){ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill();} s.z-=s.s; if(s.z<=0) s.z=w; }); requestAnimationFrame(render); }
         init(); render();
 
         function sendMsg() {
-            const input = document.getElementById('userInput');
-            const val = input.value.trim(); if(!val) return;
+            const input = document.getElementById('userInput'); const val = input.value.trim(); if(!val) return;
             const flow = document.getElementById('chat-flow');
-            
-            const u = document.createElement('div'); u.className = 'bubble user-bub'; u.innerText = val;
-            flow.appendChild(u);
-            input.value = '';
+            const u = document.createElement('div'); u.className = 'bubble user-bub'; u.innerText = val; flow.appendChild(u); input.value = '';
 
             setTimeout(() => {
-                let out = "";
-                const n = val.toLowerCase().trim();
+                let out = ""; const n = val.toLowerCase();
+                const mathMatch = val.match(/(\d+[\+\-\*\/\^]\d+)/);
 
-                // 1. SELAMLAŞMA VE HAL HATIR (KESİN YAKALAMA)
-                if (n === "selam" || n === "slm" || n === "merhaba" || n === "hey") {
-                    out = "Selam Efendim! Size nasıl yardımcı olabilirim?";
-                }
-                else if (n.includes("naber") || n.includes("ne haber") || n.includes("nasilsin") || n.includes("nasılsın")) {
-                    out = "İyiyim Efendim, teşekkür ederim! Sizinle çalışmak her zamanki gibi harika. Siz nasılsınız?";
-                }
-                // 2. HAVA DURUMU (ARNAVUTKÖY)
-                else if (n.includes("arnavutköy") || n.includes("hava") || n.includes("sıcaklık")) {
-                    out = "Meteorolojik Analiz: Arnavutköy'de şu an gökyüzü Güneşli Efendim. Sıcaklık 17°C ve nem oranı %68 seviyesindedir.";
-                }
-                // 3. RESİM OLUŞTURMA
-                else if (n.startsWith("resim:") || n.includes("çiz") || n.includes("oluştur")) {
-                    const prompt = val.split(":")[1] || val.replace("çiz", "").replace("resmet", "");
-                    out = `Efendim, "${prompt.trim()}" için sanat motorumu çalıştırıyorum...`;
-                    const img = document.createElement('img');
-                    img.className = 'ai-img';
-                    img.src = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=1080&height=1080&seed=${Math.floor(Math.random()*9999)}`;
-                    const a = document.createElement('div'); a.className = 'bubble ai-bub'; a.innerHTML = out; a.appendChild(img);
-                    flow.appendChild(a);
-                }
-                // 4. ASTRONOMİ
-                else if (n.includes("yıldız") && n.includes("büyük")) {
-                    out = "Galaktik Veri: Bilinen en büyük yıldız Stephenson 2-18'dir Efendim.";
-                }
-                // 5. MATEMATİK
-                else if (val.match(/(\d+[\+\-\*\/\^]\d+)/)) {
-                    out = `Matematiksel Çözüm: ${math.evaluate(val.match(/(\d+[\+\-\*\/\^]\d+)/)[0])} Efendim.`;
-                }
+                // 1. SELAM / NABER
+                if (n === "selam" || n === "slm" || n === "merhaba") { out = "Selam Efendim! Size nasıl yardımcı olabilirim?"; }
+                else if (n.includes("naber") || n.includes("nasılsın")) { out = "İyiyim Efendim, teşekkür ederim! Siz nasılsınız?"; }
+                
+                // 2. KONUM BAZLI HAVA DURUMU (SİLİVRİ, ARNAVUTKÖY VB.)
+                else if (n.includes("silivri")) { out = "Analiz: Silivri bölgesinde şu an hava Güneşli, sıcaklık 19°C Efendim."; }
+                else if (n.includes("arnavutköy")) { out = "Analiz: Arnavutköy bölgesinde hava Güneşli, sıcaklık 17°C ve Nem %68 Efendim."; }
+                else if (n.includes("hava")) { out = "Meteorolojik Veri: Bulunduğunuz bölgede hava şu an açık ve sıcaklık yaklaşık 18°C Efendim."; }
+                
+                // 3. MATEMATİK
+                else if (mathMatch) { out = `Matematiksel Çözüm: ${math.evaluate(mathMatch[0])} Efendim.`; }
+                
+                // 4. DİĞER SORULAR
+                else if (n.includes("yıldız") && n.includes("büyük")) { out = "Galaktik Veri: Bilinen en büyük yıldız Stephenson 2-18'dir Efendim."; }
                 else {
-                    out = "Güncellenme yapılmadığı için 'ÇA İN2.10.8' henüz bu soruya cevap veremiyor.";
-                    const a = document.createElement('div'); a.className = 'bubble ai-bub'; a.innerText = out; flow.appendChild(a);
+                    out = "Üzgünüm Efendim, bu komutu henüz tanımıyorum veya güncellenmem gerekiyor.";
                 }
-                flow.scrollTop = flow.scrollHeight;
+
+                const a = document.createElement('div'); a.className = 'bubble ai-bub'; a.innerText = out;
+                flow.appendChild(a); flow.scrollTop = flow.scrollHeight;
             }, 400);
         }
         document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMsg(); });
