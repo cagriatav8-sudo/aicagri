@@ -7,66 +7,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #ff0055; --bg: #020202; --panel: rgba(12, 12, 12, 0.98); }
+        :root { --main: #ff0055; --bg: #010101; --glass: rgba(10, 10, 10, 0.98); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', system-ui, sans-serif; }
         body, html { margin: 0; padding: 0; width: 100%; min-height: 100%; background: var(--bg); color: #fff; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
 
-        /* --- with Infinity™ İmzası --- */
         .inf-brand {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.04); padding: 6px 20px; border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; letter-spacing: 3px; color: #555; z-index: 1001; text-transform: uppercase;
         }
 
-        /* --- Uzay Arka Planı --- */
         #nebula { position: fixed; top: 0; left: 0; z-index: -1; background: #000; }
 
-        /* --- Dairesel Loader --- */
         #boot { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: 0.8s; }
         .boot-ring { width: 55px; height: 55px; border: 2px solid #111; border-top: 2px solid var(--main); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- Ayarlar Butonu (Sol Alt) --- */
-        .set-btn {
-            position: fixed; bottom: 30px; left: 30px; width: 55px; height: 55px;
-            background: var(--panel); border: 1px solid var(--main); border-radius: 18px;
-            display: flex; justify-content: center; align-items: center; color: var(--main); font-size: 22px; cursor: pointer; z-index: 1001; transition: 0.3s;
-        }
-        #side-panel {
-            position: fixed; top: 0; left: -100%; width: 350px; height: 100%; background: var(--panel);
-            border-right: 1px solid #222; z-index: 1002; transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1); padding: 80px 40px; display: flex; flex-direction: column; gap: 35px;
-        }
-        #side-panel.open { left: 0; }
-        @media (max-width: 600px) { #side-panel { width: 80%; } }
-
-        /* --- Portfolio Kutuları --- */
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 120px 40px 20px 40px; }
-        .card { background: rgba(15, 15, 15, 0.85); border: 1px solid #1a1a1a; border-radius: 35px; padding: 35px; text-align: center; transition: 0.4s; backdrop-filter: blur(10px); }
-        .card:hover { border-color: var(--main); transform: translateY(-5px); }
-        .card h2 { font-size: 1.1rem; color: var(--main); margin-bottom: 10px; }
-        .card p, .card a { color: #888; text-decoration: none; font-size: 0.9rem; line-height: 1.6; }
-
-        /* --- AI Terminal Alanı --- */
-        .ai-wrap { margin: 20px 40px 100px 40px; background: rgba(8, 8, 8, 0.98); border: 1px solid #1a1a1a; border-radius: 30px; height: 600px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
+        .ai-wrap { margin: 80px 40px 100px 40px; background: rgba(8, 8, 8, 0.98); border: 1px solid #1a1a1a; border-radius: 30px; height: 650px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
         #chat-flow { flex-grow: 1; padding: 35px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
-        .bubble { padding: 18px 25px; border-radius: 20px; max-width: 85%; line-height: 1.7; font-size: 15px; }
-        .ai-bub { background: rgba(255, 0, 85, 0.05); color: #ffcccc; align-self: flex-start; border-left: 3px solid var(--main); }
-        .user-bub { background: #1a1a1a; align-self: flex-end; border-right: 3px solid #fff; }
+        .bubble { padding: 18px 25px; border-radius: 20px; max-width: 88%; line-height: 1.7; font-size: 15px; }
+        .ai-bub { background: rgba(255, 0, 85, 0.04); color: #ffcccc; align-self: flex-start; border-left: 4px solid var(--main); }
+        .user-bub { background: #161616; align-self: flex-end; border-right: 4px solid #fff; }
 
-        /* --- Giriş Ünitesi ve Kağıt Uçak --- */
         .input-zone { padding: 25px 35px; background: #050505; display: flex; gap: 15px; border-top: 1px solid #111; align-items: center; }
         #userInput { flex-grow: 1; background: #000; border: 1px solid #222; color: #fff; padding: 16px 25px; border-radius: 30px; outline: none; font-size: 16px; }
-        #userInput:focus { border-color: var(--main); }
-        
-        .btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; border: none; font-size: 18px; }
-        .v-btn { background: #151515; color: var(--main); }
-        .s-btn { background: var(--main); color: #fff; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); }
-        .btn:hover { transform: scale(1.1); }
-
-        /* --- Sesli Dalga Overlay --- */
-        #v-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .v-bar { width: 6px; height: 20px; background: var(--main); margin: 0 4px; animation: wave 0.5s infinite alternate; }
-        @keyframes wave { from { height: 10px; } to { height: 75px; } }
+        .s-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--main); color: #fff; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .s-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--main); }
     </style>
 </head>
 <body>
@@ -75,74 +41,30 @@
     <div id="boot"><div class="boot-ring"></div></div>
     <canvas id="nebula"></canvas>
 
-    <div class="set-btn" onclick="toggleSet()"><i class="fas fa-sliders-h"></i></div>
-
-    <div id="side-panel">
-        <h3 style="color:var(--main); letter-spacing:4px; margin-bottom:10px;">SİSTEM AYARLARI</h3>
-        <div style="display:flex; flex-direction:column; gap:30px;">
-            <div class="control">
-                <label style="font-size:10px; color:#555; letter-spacing:2px; display:block; margin-bottom:10px;">MALLIK SEVİYESİ</label>
-                <input type="range" id="mIq" min="0" max="100" value="0">
-            </div>
-            <div class="control">
-                <label style="font-size:10px; color:#555; letter-spacing:2px; display:block; margin-bottom:10px;">ANALİZ DERİNLİĞİ</label>
-                <input type="range" id="pDepth" min="1" max="30" value="10">
-            </div>
-        </div>
-        <button onclick="toggleSet()" style="background:var(--main); border:none; color:#fff; padding:15px; border-radius:15px; cursor:pointer; margin-top:40px; font-weight:bold;">KAYDET VE KAPAT</button>
-    </div>
-
-    <div class="info-grid">
-        <div class="card"><h2>ÇAĞRI ATAV</h2><p>Software Architect & AI Expert</p></div>
-        <div class="card"><h2>CANLI ATMOSFER</h2><p id="live-data">Veri Senkronize Ediliyor...</p></div>
-    </div>
-
     <div class="ai-wrap">
         <div id="chat-flow">
-            <div class="bubble ai-bub">Selam Çağrı İmparator. Infinity AI tüm internet hatlarıyla senkronize oldu. Hava durumu, sıcaklık veya istediğin her şeyi sorabilirsin.</div>
+            <div class="bubble ai-bub"><strong>[ÇA İN2.10.8]</strong> Evrensel Veri Hattı Aktif. <br>Haber, Astronomi, Matematik ve Coğrafya sorgularına hazırım Çağrı İmparator.</div>
         </div>
         <div class="input-zone">
-            <div class="btn v-btn" onclick="toggleV()"><i class="fas fa-microphone"></i></div>
-            <input type="text" id="userInput" placeholder="Infinity'e bir emrin var mı?..." autofocus autocomplete="off">
-            <button class="btn s-btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
+            <input type="text" id="userInput" placeholder="Dünyayı veya Uzayı sor..." autofocus autocomplete="off">
+            <button class="s-btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
         </div>
-    </div>
-
-    <div id="v-overlay" onclick="toggleV()">
-        <div style="display:flex;"><div class="v-bar"></div><div class="v-bar" style="animation-delay:0.1s"></div><div class="v-bar" style="animation-delay:0.2s"></div><div class="v-bar" style="animation-delay:0.3s"></div><div class="v-bar" style="animation-delay:0.4s"></div></div>
-        <p style="color:var(--main); margin-top:40px; letter-spacing:5px; font-size:12px;">SESİNİZ ANALİZ EDİLİYOR...</p>
     </div>
 
     <script>
-        // --- GERÇEK ZAMANLI VERİ HATTI ---
-        const sysData = { city: "İstanbul", temp: 18, hum: 62, condition: "Açık" };
+        // --- BOOT ---
+        window.onload = () => { setTimeout(() => { document.getElementById('boot').style.opacity='0'; setTimeout(()=>document.getElementById('boot').style.display='none',800); }, 1000); };
 
-        window.onload = () => { 
-            setTimeout(() => { document.getElementById('boot').style.opacity='0'; setTimeout(()=>document.getElementById('boot').style.display='none',800); }, 1200);
-            document.getElementById('live-data').innerText = `${sysData.city}: ${sysData.temp}°C | Nem: %${sysData.hum}`;
-        };
-
-        function toggleSet() { document.getElementById('side-panel').classList.toggle('open'); }
-        function toggleV() { const v = document.getElementById('v-overlay'); v.style.display = (v.style.display === 'flex') ? 'none' : 'flex'; }
-
-        // --- KOZMİK YILDIZ MOTORU ---
+        // --- UZAY MOTORU ---
         const canvas = document.getElementById('nebula');
         const ctx = canvas.getContext('2d');
         let stars = [];
         let w, h;
-        function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; stars = []; for(let i=0; i<450; i++) stars.push({x:Math.random()*w, y:Math.random()*h, z:Math.random()*w, s:Math.random()*0.5}); }
-        function render() {
-            ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff';
-            stars.forEach(s => {
-                let px = (s.x-w/2)*(w/s.z)+w/2; let py = (s.y-h/2)*(w/s.z)+h/2; let r = (w/s.z)*0.8;
-                if(px>0 && px<w && py>0 && py<h) { ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill(); }
-                s.z -= s.s; if(s.z<=0) s.z=w;
-            });
-            requestAnimationFrame(render);
-        }
-        init(); render(); window.onresize = init;
+        function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; stars = []; for(let i=0; i<450; i++) stars.push({x:Math.random()*w, y:Math.random()*h, z:Math.random()*w, s:Math.random()*0.4}); }
+        function render() { ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff'; stars.forEach(s => { let px = (s.x-w/2)*(w/s.z)+w/2; let py = (s.y-h/2)*(w/s.z)+h/2; let r = (w/s.z)*0.8; if(px>0 && px<w && py>0 && py<h) { ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill(); } s.z -= s.s; if(s.z<=0) s.z=w; }); requestAnimationFrame(render); }
+        init(); render();
 
-        // --- AI İŞLEM MERKEZİ ---
+        // --- GLOBAL AI ÇEKİRDEĞİ ---
         function sendMsg() {
             const input = document.getElementById('userInput');
             const val = input.value.trim(); if(!val) return;
@@ -152,29 +74,48 @@
             input.value = '';
 
             setTimeout(() => {
-                let out = ""; const m = document.getElementById('mIq').value; const p = document.getElementById('pDepth').value;
+                let out = "";
                 const low = val.toLowerCase();
 
-                if(low.includes("hava") || low.includes("derece") || low.includes("sıcaklık")) {
-                    out = `Anlık verilere göre şu an ${sysData.city} bölgesinde sıcaklık ${sysData.temp}°C, nem oranı %${sysData.hum} ve gökyüzü ${sysData.status}. Dışarıdaki atmosfer Infinity AI sistemlerini tam kapasite çalıştırmak için mükemmel!`;
-                } else {
+                // 1. MATEMATİKSEL AYIKLAMA (Regex)
+                const mathMatch = val.match(/(\d+[\+\-\*\/\^]\d+)/);
+                
+                // 2. ANALİZ VE CEVAP MANTIĞI
+                if (mathMatch) {
                     try {
-                        const clean = val.replace(/kaç eder|nedir|hesapla|\?/gi, "").trim();
-                        const res = math.evaluate(clean);
-                        if(res !== undefined && typeof res !== 'function') {
-                            if(m > 75) out = "Hee? Şey... Cevap herhalde " + (res + 5) + " falan? Benim devreler yine karıştı kanka.";
-                            else { out = `Analiz Sonucu: ${res}\n\n`; for(let i=1; i<=p; i++) out += `Paragraf ${i}: Bu matematiksel veri, sistemimizin kuantum çekirdeklerinde işlenmiş saf bir sonuçtur. `; }
-                        } else throw "err";
-                    } catch(e) {
-                        if(low.includes("selam")) out = "Selam Çağrı İmparator! Infinity AI tüm internet kanallarıyla emrinde. Bugün havadan sudan mı konuşuyoruz yoksa yeni bir algoritma mı yazıyoruz?";
-                        else if(m > 75) out = "Kanka valla ne diyon anlamadım, çok teknik takılıyon bugün.";
-                        else out = `"${val}" sorgusu Infinity çekirdeklerinde analiz ediliyor Çağrı. `;
+                        const result = math.evaluate(mathMatch[0]);
+                        out = `İşlem Algılandı: ${mathMatch[0]}\nSonuç: ${result}\n\nÇağrı, matematiksel analiz çekirdeğim bu veriyi anında işledi.`;
+                    } catch(e) { out = "Güncellenme yapılmadığı için 'ÇA İN2.10.8' bu karmaşık matematiksel düğümü çözemiyor."; }
+                } 
+                else if (low.includes("dünya") && low.includes("ay") && low.includes("km")) {
+                    out = "Astronomi Verisi: Dünya ile Ay arasındaki ortalama mesafe yaklaşık 384.400 km'dir. Yörüngeye göre bu mesafe değişse de temel çekirdek verim budur.";
+                }
+                else if (low.includes("ayın evresi") || low.includes("ay durumu")) {
+                    const city = low.includes("silivri") ? "Silivri" : (low.includes("ankara") ? "Ankara" : "Bulunduğun Konum");
+                    out = `Gözlemsel Veri: Şu an ${city} semalarında Ay, 'İlk Dördün' evresine yaklaşmaktadır. Gökyüzü verilerim bu koordinatta netlik sağlıyor.`;
+                }
+                else if (low.includes("hava") || low.includes("derece")) {
+                    out = `Meteorolojik Analiz: Belirttiğin bölgede hava şu an ortalama 16-19°C civarında seyrediyor. Detaylı nem analizi için 'nem' komutu verebilirsin.`;
+                }
+                else if (low.includes("gazete") || low.includes("ne oldu") || low.includes("haber")) {
+                    out = "Gündem Analizi: Bugün global çapta teknolojik gelişmeler ve ekonomi başlıkları ön planda. Yerel haber akışında ise sosyal ve kültürel etkinlikler dikkat çekiyor.";
+                }
+                else if (low.includes("hangi site") || low.includes("nereden")) {
+                    out = "Benim veritabanım özgün Infinity çekirdeklerinden beslenir. Bilgileri herhangi bir web sitesinden kopyalamıyor, 'ÇA İN2.10.8' algoritmalarıyla sentezliyorum.";
+                }
+                else {
+                    // GENEL SORULARI ANLAMA ÇABASI
+                    if (val.length > 5) {
+                        out = `"${val}" sorgusu üzerine bir analiz yaptım Çağrı. Ancak Güncellenme yapılmadığı için 'ÇA İN2.10.8' henüz bu konudaki tüm detaylara hakim değil.`;
+                    } else {
+                        out = "Güncellenme yapılmadığı için 'ÇA İN2.10.8' henüz bu soruya cevap veremiyor.";
                     }
                 }
+
                 const a = document.createElement('div'); a.className = 'bubble ai-bub'; a.innerText = out;
                 document.getElementById('chat-flow').appendChild(a);
                 document.getElementById('chat-flow').scrollTop = document.getElementById('chat-flow').scrollHeight;
-            }, 400);
+            }, 500);
         }
         document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMsg(); });
     </script>
