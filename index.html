@@ -2,122 +2,198 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Infinity AI | Çağrı ATAV</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #ff0055; --bg: #010101; --glass: rgba(10, 10, 10, 0.98); }
+        :root { --main: #ff0055; --bg: #000; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body, html { margin: 0; padding: 0; width: 100%; min-height: 100%; background: var(--bg); color: #fff; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100dvh; background: var(--bg); color: #fff; overflow: hidden; }
 
-        .inf-brand {
-            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.04); padding: 6px 20px; border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; letter-spacing: 3px; color: #555; z-index: 1001; text-transform: uppercase;
+        #nebula { position: fixed; inset: 0; z-index: -1; }
+
+        /* --- ANA ARAYÜZ --- */
+        .os-container {
+            height: 100dvh; display: flex; flex-direction: column;
+            justify-content: space-between; align-items: center; padding: 40px 20px;
         }
 
-        #nebula { position: fixed; top: 0; left: 0; z-index: -1; background: #000; }
+        /* DİNAMİK SES ORB'U */
+        .orb-wrapper {
+            position: relative; width: 220px; height: 220px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .orb-core {
+            position: absolute; width: 140px; height: 140px;
+            background: radial-gradient(circle, var(--main) 0%, transparent 75%);
+            border-radius: 50%; filter: blur(8px); transition: transform 0.05s linear;
+            box-shadow: 0 0 60px var(--main); opacity: 0.9;
+        }
+        .orb-ring {
+            position: absolute; width: 160px; height: 160px;
+            border: 1px solid var(--main); border-radius: 50%;
+            opacity: 0.2; transition: transform 0.05s linear;
+        }
 
-        #boot { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: 0.8s; }
-        .boot-ring { width: 55px; height: 55px; border: 2px solid #111; border-top: 2px solid var(--main); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* MESAJ ALANI */
+        .display-area {
+            width: 100%; max-width: 600px; height: 200px;
+            overflow-y: auto; text-align: center; scrollbar-width: none;
+        }
+        .display-area::-webkit-scrollbar { display: none; }
+        .current-msg { font-size: 1.1rem; line-height: 1.6; color: #ffcccc; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .ai-wrap { margin: 80px 40px 100px 40px; background: rgba(8, 8, 8, 0.98); border: 1px solid #1a1a1a; border-radius: 30px; height: 650px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
-        #chat-flow { flex-grow: 1; padding: 35px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
-        .bubble { padding: 18px 25px; border-radius: 20px; max-width: 88%; line-height: 1.7; font-size: 15px; }
-        .ai-bub { background: rgba(255, 0, 85, 0.04); color: #ffcccc; align-self: flex-start; border-left: 4px solid var(--main); }
-        .user-bub { background: #161616; align-self: flex-end; border-right: 4px solid #fff; }
+        /* GİRİŞ ALANI */
+        .input-bar {
+            width: 90%; max-width: 500px; background: rgba(15,15,15,0.9);
+            border: 1px solid #222; border-radius: 40px; display: flex;
+            align-items: center; padding: 10px 20px; gap: 15px;
+        }
+        #cmdInput { flex-grow: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; }
+        .action-icon { color: var(--main); font-size: 20px; cursor: pointer; transition: 0.3s; }
+        .action-icon:hover { transform: scale(1.2); }
 
-        .input-zone { padding: 25px 35px; background: #050505; display: flex; gap: 15px; border-top: 1px solid #111; align-items: center; }
-        #userInput { flex-grow: 1; background: #000; border: 1px solid #222; color: #fff; padding: 16px 25px; border-radius: 30px; outline: none; font-size: 16px; }
-        .s-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--main); color: #fff; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .s-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--main); }
+        .inf-header { letter-spacing: 5px; font-size: 10px; color: #444; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div class="inf-brand">with Infinity™</div>
-    <div id="boot"><div class="boot-ring"></div></div>
     <canvas id="nebula"></canvas>
 
-    <div class="ai-wrap">
-        <div id="chat-flow">
-            <div class="bubble ai-bub"><strong>[ÇA İN2.10.8]</strong> Evrensel Veri Hattı Aktif. <br>Haber, Astronomi, Matematik ve Coğrafya sorgularına hazırım Çağrı İmparator.</div>
+    <div class="os-container">
+        <div class="inf-header">WITH INFINITY™ | ÇA İN2.10.8</div>
+
+        <div class="orb-wrapper" onclick="toggleSpeech()">
+            <div class="orb-ring" id="ring"></div>
+            <div class="orb-core" id="orb"></div>
+            <i class="fas fa-atom" id="center-icon" style="font-size: 30px; z-index: 100; color: #fff; opacity: 0.5;"></i>
         </div>
-        <div class="input-zone">
-            <input type="text" id="userInput" placeholder="Dünyayı veya Uzayı sor..." autofocus autocomplete="off">
-            <button class="s-btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
+
+        <div class="display-area" id="log">
+            <div class="current-msg">Infinity AI Çevrimiçi. Uzay ve Bilim veritabanı %100 senkronize edildi Çağrı İmparator. Seni dinliyorum.</div>
+        </div>
+
+        <div class="input-bar">
+            <i class="fas fa-microphone action-icon" onclick="toggleSpeech()" id="mic-btn"></i>
+            <input type="text" id="cmdInput" placeholder="Sorgula..." autocomplete="off">
+            <i class="fas fa-paper-plane action-icon" onclick="handleInput()"></i>
         </div>
     </div>
 
     <script>
-        // --- BOOT ---
-        window.onload = () => { setTimeout(() => { document.getElementById('boot').style.opacity='0'; setTimeout(()=>document.getElementById('boot').style.display='none',800); }, 1000); };
-
-        // --- UZAY MOTORU ---
+        // --- UZAY ARKA PLANI ---
         const canvas = document.getElementById('nebula');
         const ctx = canvas.getContext('2d');
         let stars = [];
         let w, h;
-        function init() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; stars = []; for(let i=0; i<450; i++) stars.push({x:Math.random()*w, y:Math.random()*h, z:Math.random()*w, s:Math.random()*0.4}); }
-        function render() { ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff'; stars.forEach(s => { let px = (s.x-w/2)*(w/s.z)+w/2; let py = (s.y-h/2)*(w/s.z)+h/2; let r = (w/s.z)*0.8; if(px>0 && px<w && py>0 && py<h) { ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill(); } s.z -= s.s; if(s.z<=0) s.z=w; }); requestAnimationFrame(render); }
-        init(); render();
+        function init() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; stars=[]; for(let i=0; i<400; i++) stars.push({x:Math.random()*w, y:Math.random()*h, z:Math.random()*w, s:Math.random()*0.5}); }
+        function render() { ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#fff'; stars.forEach(s => { let px=(s.x-w/2)*(w/s.z)+w/2; let py=(s.y-h/2)*(w/s.z)+h/2; let r=(w/s.z)*0.7; if(px>0 && px<w && py>0 && py<h){ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill();} s.z-=s.s; if(s.z<=0) s.z=w; }); requestAnimationFrame(render); }
+        init(); render(); window.onresize = init;
 
-        // --- GLOBAL AI ÇEKİRDEĞİ ---
-        function sendMsg() {
-            const input = document.getElementById('userInput');
-            const val = input.value.trim(); if(!val) return;
+        // --- SES VE GÖRSEL ANALİZÖR ---
+        const orb = document.getElementById('orb');
+        const ring = document.getElementById('ring');
+        let audioCtx, analyser, dataArray;
+        let isSpeaking = false;
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'tr-TR';
+        recognition.interimResults = false;
+
+        const synthesis = window.speechSynthesis;
+
+        async function toggleSpeech() {
+            if (isSpeaking) return;
+            recognition.start();
+            document.getElementById('mic-btn').style.color = "#00ff00";
             
-            const u = document.createElement('div'); u.className = 'bubble user-bub'; u.innerText = val;
-            document.getElementById('chat-flow').appendChild(u);
-            input.value = '';
-
-            setTimeout(() => {
-                let out = "";
-                const low = val.toLowerCase();
-
-                // 1. MATEMATİKSEL AYIKLAMA (Regex)
-                const mathMatch = val.match(/(\d+[\+\-\*\/\^]\d+)/);
-                
-                // 2. ANALİZ VE CEVAP MANTIĞI
-                if (mathMatch) {
-                    try {
-                        const result = math.evaluate(mathMatch[0]);
-                        out = `İşlem Algılandı: ${mathMatch[0]}\nSonuç: ${result}\n\nÇağrı, matematiksel analiz çekirdeğim bu veriyi anında işledi.`;
-                    } catch(e) { out = "Güncellenme yapılmadığı için 'ÇA İN2.10.8' bu karmaşık matematiksel düğümü çözemiyor."; }
-                } 
-                else if (low.includes("dünya") && low.includes("ay") && low.includes("km")) {
-                    out = "Astronomi Verisi: Dünya ile Ay arasındaki ortalama mesafe yaklaşık 384.400 km'dir. Yörüngeye göre bu mesafe değişse de temel çekirdek verim budur.";
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioCtx = new AudioContext();
+            const source = audioCtx.createMediaStreamSource(stream);
+            analyser = audioCtx.createAnalyser();
+            source.connect(analyser);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            
+            function visualize() {
+                if(!isSpeaking) {
+                    analyser.getByteFrequencyData(dataArray);
+                    let avg = dataArray.reduce((a,b) => a+b) / dataArray.length;
+                    let s = 1 + (avg / 40);
+                    orb.style.transform = `scale(${s})`;
+                    ring.style.transform = `scale(${s*1.3})`;
                 }
-                else if (low.includes("ayın evresi") || low.includes("ay durumu")) {
-                    const city = low.includes("silivri") ? "Silivri" : (low.includes("ankara") ? "Ankara" : "Bulunduğun Konum");
-                    out = `Gözlemsel Veri: Şu an ${city} semalarında Ay, 'İlk Dördün' evresine yaklaşmaktadır. Gökyüzü verilerim bu koordinatta netlik sağlıyor.`;
-                }
-                else if (low.includes("hava") || low.includes("derece")) {
-                    out = `Meteorolojik Analiz: Belirttiğin bölgede hava şu an ortalama 16-19°C civarında seyrediyor. Detaylı nem analizi için 'nem' komutu verebilirsin.`;
-                }
-                else if (low.includes("gazete") || low.includes("ne oldu") || low.includes("haber")) {
-                    out = "Gündem Analizi: Bugün global çapta teknolojik gelişmeler ve ekonomi başlıkları ön planda. Yerel haber akışında ise sosyal ve kültürel etkinlikler dikkat çekiyor.";
-                }
-                else if (low.includes("hangi site") || low.includes("nereden")) {
-                    out = "Benim veritabanım özgün Infinity çekirdeklerinden beslenir. Bilgileri herhangi bir web sitesinden kopyalamıyor, 'ÇA İN2.10.8' algoritmalarıyla sentezliyorum.";
-                }
-                else {
-                    // GENEL SORULARI ANLAMA ÇABASI
-                    if (val.length > 5) {
-                        out = `"${val}" sorgusu üzerine bir analiz yaptım Çağrı. Ancak Güncellenme yapılmadığı için 'ÇA İN2.10.8' henüz bu konudaki tüm detaylara hakim değil.`;
-                    } else {
-                        out = "Güncellenme yapılmadığı için 'ÇA İN2.10.8' henüz bu soruya cevap veremiyor.";
-                    }
-                }
-
-                const a = document.createElement('div'); a.className = 'bubble ai-bub'; a.innerText = out;
-                document.getElementById('chat-flow').appendChild(a);
-                document.getElementById('chat-flow').scrollTop = document.getElementById('chat-flow').scrollHeight;
-            }, 500);
+                requestAnimationFrame(visualize);
+            }
+            visualize();
         }
-        document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMsg(); });
+
+        recognition.onresult = (e) => {
+            const cmd = e.results[0][0].transcript;
+            handleCommand(cmd);
+            document.getElementById('mic-btn').style.color = var(--main);
+        };
+
+        // --- BİLGİ İŞLEME MERKEZİ ---
+        function handleInput() {
+            const val = document.getElementById('cmdInput').value;
+            if(val) handleCommand(val);
+            document.getElementById('cmdInput').value = '';
+        }
+
+        function handleCommand(rawCmd) {
+            const cmd = rawCmd.toLowerCase().replace(/\s+/g, '');
+            let response = "";
+
+            // 1. ASTRONOMİ VERİTABANI
+            if (cmd.includes("enyüyük") || cmd.includes("enyıldız") || (cmd.includes("yıldız") && cmd.includes("büyük"))) {
+                response = "Gözlemlenebilen en büyük yıldız 'VY Canis Majoris' veya 'Stephenson 2-18' olarak bilinir. Ancak dünyadan en parlak görünen yıldız 'Sirius'tur Çağrı İmparator.";
+            } 
+            else if (cmd.includes("cücegezegen") || (cmd.includes("gezegen") && cmd.includes("cüce"))) {
+                response = "Cüce gezegen sınıfında en meşhuru Plüton'dur. Ayrıca Eris, Haumea, Makemake ve Ceres de bu sınıfa girer.";
+            }
+            else if (cmd.includes("dünya") && cmd.includes("ay") && (cmd.includes("km") || cmd.includes("uzak"))) {
+                response = "Dünya ile Ay arası ortalama 384 bin 400 kilometredir. Işık hızıyla bu mesafe sadece 1 saniye sürer.";
+            }
+            else if (cmd.includes("selam") || cmd.includes("merhaba")) {
+                response = "Selam Çağrı İmparator. Galaktik veritabanı açık, seni dinliyorum.";
+            }
+            // 2. MATEMATİKSEL AYIKLAMA
+            else if (rawCmd.match(/(\d+[\+\-\*\/\^]\d+)/)) {
+                const mathRes = math.evaluate(rawCmd.match(/(\d+[\+\-\*\/\^]\d+)/)[0]);
+                response = `Analiz Sonucu: ${mathRes}. Çağrı, bu matematiksel veri çekirdeklerimde saniyeler içinde işlendi.`;
+            }
+            // 3. ÇA İN2.10.8 KORUMASI
+            else {
+                response = "Güncellenme yapılmadığı için 'ÇA İN2.10.8' henüz bu astronomik veya genel soruya cevap veremiyor.";
+            }
+
+            displayAndSpeak(response);
+        }
+
+        function displayAndSpeak(text) {
+            isSpeaking = true;
+            document.getElementById('log').innerHTML = `<div class="current-msg">${text}</div>`;
+            
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'tr-TR';
+            
+            // Konuşma esnasında orb dalgalanması
+            let pulse = setInterval(() => {
+                let s = 1.2 + Math.random() * 0.4;
+                orb.style.transform = `scale(${s})`;
+            }, 80);
+
+            utter.onend = () => {
+                isSpeaking = false;
+                clearInterval(pulse);
+                orb.style.transform = `scale(1)`;
+            };
+            synthesis.speak(utter);
+        }
+
+        document.getElementById('cmdInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') handleInput(); });
     </script>
 </body>
 </html>
