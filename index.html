@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Infinity AI | Musab</title>
+    <title>Infinity AI | Efendim</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -46,10 +46,10 @@
     <div id="mainContent">
         <div class="ai-section">
             <div id="chat-flow">
-                <div class="bubble ai-bub">Selam Musab! Görsel motoru kaldırıldı, sistem sadeleşti. Seni dinliyorum.</div>
+                <div class="bubble ai-bub">Selam Efendim! Infinity AI emrinizdedir. Sizi dinliyorum.</div>
             </div>
             <div class="input-zone">
-                <input type="text" id="userInput" placeholder="Mesaj yaz..." autofocus autocomplete="off">
+                <input type="text" id="userInput" placeholder="Mesaj yazın..." autofocus autocomplete="off">
                 <button class="send-btn" onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -78,22 +78,15 @@
                 let out = ""; const n = val.toLowerCase();
                 const mathMatch = val.match(/(\d+[\+\-\*\/\^]\d+)/);
 
-                // 1. SELAM / NABER
                 if (n === "selam" || n === "slm" || n === "merhaba") { out = "Selam Efendim! Size nasıl yardımcı olabilirim?"; }
                 else if (n.includes("naber") || n.includes("nasılsın")) { out = "İyiyim Efendim, teşekkür ederim! Siz nasılsınız?"; }
-                
-                // 2. KONUM BAZLI HAVA DURUMU (SİLİVRİ, ARNAVUTKÖY VB.)
                 else if (n.includes("silivri")) { out = "Analiz: Silivri bölgesinde şu an hava Güneşli, sıcaklık 19°C Efendim."; }
                 else if (n.includes("arnavutköy")) { out = "Analiz: Arnavutköy bölgesinde hava Güneşli, sıcaklık 17°C ve Nem %68 Efendim."; }
                 else if (n.includes("hava")) { out = "Meteorolojik Veri: Bulunduğunuz bölgede hava şu an açık ve sıcaklık yaklaşık 18°C Efendim."; }
-                
-                // 3. MATEMATİK
                 else if (mathMatch) { out = `Matematiksel Çözüm: ${math.evaluate(mathMatch[0])} Efendim.`; }
-                
-                // 4. DİĞER SORULAR
                 else if (n.includes("yıldız") && n.includes("büyük")) { out = "Galaktik Veri: Bilinen en büyük yıldız Stephenson 2-18'dir Efendim."; }
                 else {
-                    out = "Üzgünüm Efendim, bu komutu henüz tanımıyorum veya güncellenmem gerekiyor.";
+                    out = "Anlayamadım Efendim, komutu tekrar eder misiniz?";
                 }
 
                 const a = document.createElement('div'); a.className = 'bubble ai-bub'; a.innerText = out;
