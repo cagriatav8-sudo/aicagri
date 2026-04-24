@@ -10,19 +10,11 @@
         body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; height: 100%; overflow: hidden; }
 
         /* --- HEADER --- */
-        #header { 
-            position: fixed; top: 0; width: 100%; height: 75px; 
-            background: rgba(0,0,0,0.95); display: flex; align-items: center; 
-            padding: 0 30px; border-bottom: 2px solid var(--emerald); z-index: 1000; 
-        }
+        #header { position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.95); display: flex; align-items: center; padding: 0 30px; border-bottom: 2px solid var(--emerald); z-index: 1000; }
         .menu-btn { color: var(--emerald); font-size: 26px; cursor: pointer; margin-right: 20px; }
 
         /* --- SIDEBAR --- */
-        #sidebar { 
-            position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
-            background: var(--panel); z-index: 1001; padding: 100px 30px; 
-            border-right: 2px solid var(--emerald); box-shadow: 10px 0 30px #000;
-        }
+        #sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background: var(--panel); z-index: 1001; padding: 100px 30px; border-right: 2px solid var(--emerald); box-shadow: 10px 0 30px #000; }
         #sidebar.active { left: 0; }
         
         /* --- CHAT AREA --- */
@@ -30,10 +22,6 @@
         .bubble { padding: 22px 30px; border-radius: var(--radius); max-width: 85%; font-size: 16px; }
         .ai { background: rgba(0, 255, 65, 0.03); align-self: flex-start; border: 1px solid rgba(0, 255, 65, 0.1); border-bottom-left-radius: 5px; }
         .user { background: #111; align-self: flex-end; border-right: 5px solid var(--emerald); border-bottom-right-radius: 5px; }
-
-        /* --- WIKIPEDIA MONITOR --- */
-        #wiki-panel { position: fixed; right: -600px; top: 90px; width: 500px; height: 78vh; background: #fff; color: #000; border-radius: 30px; padding: 40px; z-index: 900; border: 8px solid var(--emerald); overflow-y: auto; }
-        #wiki-panel.active { right: 30px; }
 
         /* --- SURVEY BUTTONS --- */
         .survey-box { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
@@ -43,10 +31,17 @@
         /* --- INPUT --- */
         .nexus { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); width: 75%; background: #000; padding: 10px; border-radius: 60px; display: flex; border: 1px solid #333; }
         #uInp { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px 25px; outline: none; font-size: 18px; }
-        .send-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--emerald); border: none; cursor: pointer; color: #000; }
+        .send-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--emerald); border: none; cursor: pointer; color: #000; font-size: 24px; }
 
         /* --- OFFLINE SCREEN --- */
         #off-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .online-trigger { 
+            background: var(--emerald); color: #000; padding: 18px 45px; 
+            border-radius: 50px; font-weight: 900; cursor: pointer; border: none; 
+            box-shadow: 0 0 30px var(--emerald); margin-top: 25px; font-size: 16px;
+        }
+
+        /* --- LINK STYLE --- */
         .github-link { text-decoration: underline; color: var(--emerald); cursor: pointer; font-weight: bold; }
     </style>
 </head>
@@ -59,36 +54,29 @@
 
 <div id="sidebar">
     <div style="background:#1a1a1a; padding:20px; border-radius:20px; margin-bottom:20px;">
-        <h4 style="color:var(--emerald); margin:0;">Geliştirici</h4>
+        <h4 style="color:var(--emerald); margin:0;">Sistem Sahibi</h4>
         <p style="font-size:14px;">Çağrı ATAV</p>
     </div>
-    <p style="color:#666; font-size:12px;">Destek Hattı: 0541 211 39 40</p>
-    <button onclick="triggerOff()" style="width:100%; background:red; color:#fff; padding:15px; border-radius:15px; border:none; cursor:pointer; margin-top:20px;">Bağlantıyı Kes (Test)</button>
+    <button onclick="triggerOff()" style="width:100%; background:red; color:#fff; padding:15px; border-radius:15px; border:none; cursor:pointer; font-weight:bold;">Sistemi Çevrimdışı Yap</button>
 </div>
 
 <div id="off-screen">
-    <i class="fas fa-infinity" style="font-size: 100px; color: var(--emerald);"></i>
-    <h1 style="margin-top:30px;">BAĞLANTI KESİLDİ</h1>
-    <p>Sistem şu an offline modda.</p>
-    <button onclick="location.reload()" style="background:var(--emerald); padding:15px 40px; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">SİSTEMİ YENİDEN BAŞLAT</button>
-</div>
-
-<div id="wiki-panel">
-    <div style="text-align:right"><i class="fas fa-times-circle" onclick="this.parentElement.parentElement.classList.remove('active')" style="cursor:pointer; font-size: 25px;"></i></div>
-    <h1 id="w-title">Başlık</h1>
-    <div id="w-body"></div>
+    <i class="fas fa-wifi-slash" style="font-size: 80px; color: #555;"></i>
+    <h1 style="margin-top:20px; letter-spacing: 3px;">BAĞLANTI KESİLDİ</h1>
+    <p style="color:#888;">Çağrı ATAV Mantık Çekirdeği askıya alındı.</p>
+    <button class="online-trigger" onclick="goOnline()">ONLINE MODA GEÇ</button>
 </div>
 
 <div id="viewport">
     <div class="bubble ai">
-        <strong>Infinity AI | Çağrı ATAV v15</strong> <br>
-        Üç çizgi (menü) geri getirildi. Esneklik %5000. <br>
-        Herhangi bir nesne için "tanımı" yaz, anketi açalım!
+        <strong>Hoş Geldin Knk!</strong> <br>
+        Sistem her zamanki gibi %5000 esnek. <br>
+        Üç çizgi aktif, offline moddan online'a dönüş butonu eklendi.
     </div>
 </div>
 
 <div class="nexus">
-    <input type="text" id="uInp" placeholder="Örn: Tahta tanımı..." autofocus autocomplete="off">
+    <input type="text" id="uInp" placeholder="Tahta tanımı..." autofocus autocomplete="off">
     <button class="send-btn" onclick="run()"><i class="fas fa-paper-plane"></i></button>
 </div>
 
@@ -96,7 +84,17 @@
     const GIT = "https://github.com/cagriatav8-sudo/aicagri/blob/main/index.html";
 
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-    function triggerOff() { document.getElementById('off-screen').style.display = 'flex'; }
+    
+    function triggerOff() { 
+        document.getElementById('off-screen').style.display = 'flex'; 
+        toggleMenu(); // Sidebar'ı kapat
+    }
+
+    // ONLINE MODA DÖNÜŞ FONKSİYONU
+    function goOnline() {
+        document.getElementById('off-screen').style.display = 'none';
+        render("Sistem başarıyla <b>Online</b> moda geçirildi. Tüm sensörler aktif!", "ai");
+    }
 
     function run() {
         const inp = document.getElementById('uInp');
@@ -114,8 +112,6 @@
             } else if(low.includes("tanımı") || low.includes("nedir")) {
                 const term = low.replace("tanımı","").replace("nedir","").trim();
                 showAnket(term);
-            } else if(low.match(/^(evet|hayır|evt|hayı|ok|tamam)$/)) {
-                render("Çağrı ATAV çekirdeği onayladı.", "ai");
             } else {
                 showErr();
             }
@@ -126,22 +122,14 @@
         const d = document.createElement('div');
         d.className = 'bubble ai';
         d.innerHTML = `
-            <strong>"${t.toUpperCase()}"</strong> için anket:
+            <strong>"${t.toUpperCase()}"</strong> Anketi Açıldı:
             <div class="survey-box">
                 <button class="survey-btn" onclick="window.open('https://google.com/search?q=${t}', '_blank')">1. Siteye Git (Yeni Sekme)</button>
-                <button class="survey-btn" onclick="openWiki('${t}')">2. Wikipedia Monitörü</button>
+                <button class="survey-btn" onclick="render('Wikipedia monitörü simüle ediliyor... Bu bir ${t} nesnesidir.', 'ai')">2. Bu Sitede Öğren</button>
             </div>
         `;
         document.getElementById('viewport').appendChild(d);
         document.getElementById('viewport').scrollTop = document.getElementById('viewport').scrollHeight;
-    }
-
-    function openWiki(t) {
-        const p = document.getElementById('wiki-panel');
-        document.getElementById('w-title').innerText = t.toUpperCase();
-        document.getElementById('w-body').innerHTML = `<p>${t} nesnesi, Çağrı ATAV sistemindeki 3M+ veri havuzundan çekildi. Bu bir nesnedir.</p>`;
-        p.classList.add('active');
-        render(`Monitör yüklendi: <b>${t}</b>`, "ai");
     }
 
     function showErr() {
