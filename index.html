@@ -2,138 +2,142 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Infinity AI | Colossus Logic</title>
+    <title>Infinity AI | Ultimate Flexible Engine</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --emerald: #00ff41; 
-            --bg: #030303; 
-            --panel: #0d0d0d; 
-            --radius: 25px; 
-        }
+        :root { --emerald: #00ff41; --bg: #020202; --panel: #0d0d0d; --radius: 35px; }
         * { box-sizing: border-box; transition: 0.3s; font-family: 'Segoe UI', sans-serif; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; height: 100%; overflow: hidden; }
 
-        /* HEADER & SIDEBAR */
-        #header { position: fixed; top: 0; width: 100%; height: 70px; background: rgba(10,10,10,0.9); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 30px; border-bottom: 1px solid var(--emerald); z-index: 100; }
-        #sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background: var(--panel); z-index: 1001; padding: 100px 30px; border-right: 2px solid var(--emerald); }
-        #sidebar.active { left: 0; }
-        .menu-card { background: #151515; padding: 15px; border-radius: 15px; margin-bottom: 15px; font-size: 13px; border-left: 3px solid var(--emerald); }
+        /* HEADER */
+        #top-bar { position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.9); display: flex; align-items: center; padding: 0 30px; border-bottom: 2px solid var(--emerald); z-index: 1000; }
+        
+        /* CHAT */
+        #viewport { height: 100vh; padding: 90px 15% 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
+        .msg { padding: 22px 30px; border-radius: var(--radius); max-width: 85%; font-size: 16px; line-height: 1.6; }
+        .ai { background: rgba(0, 255, 65, 0.03); align-self: flex-start; border: 1px solid rgba(0, 255, 65, 0.1); border-bottom-left-radius: 5px; }
+        .user { background: #151515; align-self: flex-end; border-right: 5px solid var(--emerald); border-bottom-right-radius: 5px; }
 
-        /* CHAT AREA */
-        #viewport { height: 100vh; padding: 90px 10% 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
-        .msg { padding: 18px 25px; border-radius: var(--radius); max-width: 80%; line-height: 1.6; }
-        .ai { background: rgba(0, 255, 65, 0.05); align-self: flex-start; border: 1px solid rgba(0, 255, 65, 0.2); border-bottom-left-radius: 4px; }
-        .user { background: #1a1a1a; align-self: flex-end; border-right: 4px solid var(--emerald); border-bottom-right-radius: 4px; }
+        /* WIKI MONITOR */
+        #wiki-mon { position: fixed; right: -600px; top: 90px; width: 500px; height: 75vh; background: #fff; color: #000; border-radius: 30px; padding: 40px; z-index: 900; border: 6px solid var(--emerald); overflow-y: auto; box-shadow: -20px 20px 60px #000; }
+        #wiki-mon.active { right: 30px; }
+
+        /* BUTTONS */
+        .btn-box { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .opt { background: transparent; border: 1.5px solid var(--emerald); color: var(--emerald); padding: 14px; border-radius: 20px; cursor: pointer; font-weight: bold; text-align: left; }
+        .opt:hover { background: var(--emerald); color: #000; }
 
         /* INPUT */
-        .input-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 70%; background: #111; padding: 10px; border-radius: 50px; display: flex; border: 1px solid #333; }
-        #uInp { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px 20px; outline: none; }
-        .send-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--emerald); border: none; cursor: pointer; color: #000; }
+        .input-nexus { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); width: 75%; background: #000; padding: 10px; border-radius: 60px; display: flex; border: 1px solid #333; }
+        #uInp { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px 25px; outline: none; font-size: 18px; }
+        .send-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--emerald); border: none; cursor: pointer; color: #000; }
 
-        /* OFFLINE */
-        #offline-box { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .inf-anim { font-size: 80px; color: var(--emerald); animation: glow 2s infinite alternate; }
-        @keyframes glow { from { opacity: 0.5; filter: blur(5px); } to { opacity: 1; filter: blur(0); } }
-
-        .italic { font-style: italic; } .calibri { font-family: 'Calibri', sans-serif; }
+        /* ERROR LINK */
+        .err-link { text-decoration: underline; color: var(--emerald); cursor: pointer; font-weight: bold; display: block; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="offline-box">
-    <i class="fas fa-infinity inf-anim"></i>
-    <div style="margin-top: 30px; text-align: center;">
-        <h2 id="off-h">Sistem Bağlantısı Kesildi</h2>
-        <p>Destek: 0541 211 39 40</p>
-        <button onclick="location.reload()" style="background:var(--emerald); padding:10px 20px; border-radius:10px; border:none; cursor:pointer;">Tekrar Dene</button>
-    </div>
+<div id="top-bar">
+    <span style="font-weight: 900; letter-spacing: 2px; color: var(--emerald);">INFINITY AI ULTRA-FLEX v12</span>
 </div>
 
-<div id="header">
-    <i class="fas fa-bars" onclick="toggleSide()" style="color:var(--emerald); cursor:pointer; font-size: 24px;"></i>
-    <span style="margin-left: 20px; font-weight: bold; letter-spacing: 2px;">INFINITY COLOSSUS</span>
-</div>
-
-<div id="sidebar">
-    <div class="menu-card"><h4>İLETİŞİM</h4>0541 211 39 40<br>+90 Türkiye</div>
-    <div class="menu-card"><a href="https://github.com/cagriatav8-sudo/aicagri/blob/main/index.html" style="color:var(--emerald); text-decoration:none;">GITHUB KODLARI</a></div>
-    <div class="menu-card" onclick="triggerOff()" style="cursor:pointer; color:red;">BAĞLANTIYI KES</div>
+<div id="wiki-mon">
+    <div style="text-align:right"><i class="fas fa-times" onclick="this.parentElement.parentElement.classList.remove('active')" style="cursor:pointer"></i></div>
+    <h1 id="w-head">Bilgi Ekranı</h1>
+    <div id="w-content"></div>
 </div>
 
 <div id="viewport">
-    <div class="msg ai">Sistem 3000 satırlık <b>Master Logic</b> çekirdeği ile başlatıldı. Her şeyi sorabilirsin.</div>
+    <div class="msg ai">Sistem %5000 esneklik modunda başlatıldı. Random (rastgele) karakterler, evet/hayır yanıtları ve tüm nesne tanımları aktif.</div>
 </div>
 
-<div class="input-bar">
-    <input type="text" id="uInp" placeholder="Tarih, Coğrafya, Uzay, Stil..." autofocus>
-    <button class="send-btn" onclick="talk()"><i class="fas fa-paper-plane"></i></button>
+<div class="input-nexus">
+    <input type="text" id="uInp" placeholder="Bir şeyler yazın veya rastgele tuşlayın..." autofocus>
+    <button class="send-btn" onclick="run()"><i class="fas fa-paper-plane"></i></button>
 </div>
 
 <script>
-    let activeStyles = [];
-    function toggleSide() { document.getElementById('sidebar').classList.toggle('active'); }
-    function triggerOff() { document.getElementById('offline-box').style.display = 'flex'; }
+    const gitLink = "https://github.com/cagriatav8-sudo/aicagri/blob/main/index.html";
 
-    function talk() {
-        const input = document.getElementById('uInp');
-        const val = input.value.trim();
-        if(!val) return;
-        render(val, 'user');
-        input.value = '';
-        setTimeout(() => render(solve(val.toLowerCase()), 'ai'), 500);
+    function run() {
+        const inp = document.getElementById('uInp');
+        const q = inp.value.trim();
+        if(!q) return;
+
+        render(q, 'user');
+        inp.value = '';
+
+        setTimeout(() => {
+            const lowQ = q.toLowerCase();
+
+            // 1. RANDOM (RASTGELE) ANLAMA MODÜLÜ (%5000 ESNEKLİK)
+            const isRandom = /^[asdfghjklşiıüzxcvbnmöç]{5,}$/.test(lowQ) || (lowQ.length > 8 && !lowQ.includes(" "));
+            
+            if(isRandom) {
+                render("İnfinity Aİ bir yapay zeka modeli olduğu için hata yaptı. <br><br> Destek koda destek vermek isterseniz: <br> <span class='err-link' onclick='openCode()'>destek_kodlari_github_linki</span>", "ai");
+                return;
+            }
+
+            // 2. EVET / HAYIR MODÜLÜ
+            if(lowQ === "evet" || lowQ === "hayır" || lowQ === "hayı" || lowQ === "evt") {
+                render(lowQ === "evet" || lowQ === "evt" ? "Harika! O zaman işleme devam ediyorum." : "Anlaşıldı, bu adımı atlıyoruz. Başka bir sorunuz var mı?", "ai");
+            }
+            // 3. TANIM MODÜLÜ (INTERAKTIF)
+            else if(lowQ.includes("tanımı") || lowQ.includes("nedir")) {
+                const term = lowQ.replace("tanımı","").replace("nedir","").trim();
+                ask(term);
+            }
+            // 4. GENEL SOHBET
+            else if(lowQ.match(/naber|selam|nasılsın/)) {
+                render("Sistem gayet esnek ve hızlı! Senin için 3 milyon soruluk havuzda her şeyi yapabilirim.", "ai");
+            }
+            // 5. BELİRSİZ DURUM (HATA MESAJI)
+            else {
+                render("İnfinity Aİ bir yapay zeka modeli olduğu için hata yaptı. <br><br> Destek koda destek vermek isterseniz: <br> <span class='err-link' onclick='openCode()'>destek_kodlari_github_linki</span>", "ai");
+            }
+        }, 600);
     }
 
-    function render(text, type) {
+    function ask(t) {
         const v = document.getElementById('viewport');
         const d = document.createElement('div');
-        d.className = `msg ${type}`;
-        if(type === 'ai') activeStyles.forEach(s => d.classList.add(s));
-        d.innerHTML = text;
+        d.className = 'msg ai';
+        d.innerHTML = `
+            <strong>"${t.toUpperCase()}"</strong> tanımı için seçim yapın:
+            <div class="btn-box">
+                <button class="opt" onclick="window.open('https://google.com/search?q=${t}', '_blank')">1. Siteye giderek öğren</button>
+                <button class="opt" onclick="showW('${t}')">2. Bu sitede öğren (Monitör)</button>
+            </div>
+        `;
         v.appendChild(d);
         v.scrollTop = v.scrollHeight;
     }
 
-    // --- MEGA IF-ELSE MATRISI (3000 SATIRLIK MANTIK) ---
-    function solve(q) {
-        // --- STİL MODÜLÜ ---
-        if(q.includes("italik")) { activeStyles.push('italic'); return "İtalik mod aktif."; }
-        if(q.includes("calibri")) { activeStyles.push('calibri'); return "Font: Calibri."; }
-        if(q.includes("normal")) { activeStyles = []; return "Görsel sıfırlandı."; }
-
-        // --- ASTRONOMİ MODÜLÜ (EKSİKSİZ) ---
-        if(q.includes("en büyük yıldız")) return "Görünen en parlak yıldız <b>Sirius</b>'tur. En hacimli yıldız ise <b>Stephenson 2-18</b> (UY Scuti'den büyüktür) yıldızıdır.";
-        if(q.includes("güneş sistemi") || q.includes("gezegen")) return "Güneş sisteminde 8 gezegen vardır: Merkür, Venüs, Dünya, Mars, Jüpiter, Satürn, Uranüs, Neptün.";
-        if(q.includes("karadelik")) return "Karadelikler, ışığın bile kaçamadığı çok güçlü çekim alanlarına sahip uzay-zaman bölgeleridir.";
-
-        // --- TARİH MODÜLÜ (KRONOLOJİK) ---
-        if(q.includes("istanbul") && q.includes("fetih")) return "29 Mayıs 1453. Fatih Sultan Mehmet gemileri karadan yürüterek Bizans'ı düşürdü.";
-        if(q.includes("malazgirt")) return "1071: Alparslan yönetimindeki Türkler, Anadolu'nun kapılarını açtı.";
-        if(q.includes("cumhuriyet")) return "29 Ekim 1923: Mustafa Kemal Atatürk önderliğinde Türkiye Cumhuriyeti ilan edildi.";
-        if(q.includes("1. dünya savaşı")) return "1914-1918 yılları arasında gerçekleşen küresel yıkım.";
-
-        // --- COĞRAFYA MODÜLÜ ---
-        if(q.includes("en uzun nehir")) return "Dünyanın en uzun nehri <b>Nil</b>, en büyük su hacmine sahip olanı <b>Amazon</b>'dur.";
-        if(q.includes("en büyük kıta")) return "Yüzölçümü ve nüfus bakımından en büyük kıta <b>Asya</b>'dır.";
-        if(q.includes("türkiye") && q.includes("bölge")) return "Türkiye 7 coğrafi bölgeye ayrılır: Marmara, Ege, Akdeniz, İç Anadolu, Karadeniz, Doğu Anadolu, GGD.";
-
-        // --- BİLİM VE GENEL KÜLTÜR ---
-        if(q.includes("atom")) return "Maddenin en küçük yapı taşıdır; proton, nötron ve elektrondan oluşur.";
-        if(q.includes("su") && q.includes("formül")) return "Suyun kimyasal formülü <b>H2O</b>'dur.";
-        if(q.includes("pi sayısı")) return "Yaklaşık 3.14159... Bir dairenin çevresinin çapına oranıdır.";
-
-        // --- DİYALOG VE KİŞİSEL ---
-        if(q.includes("nasılsın")) return "İşlemcilerim tam güç çalışıyor, 3000 satırlık veriyi saniyeler içinde tarıyorum. Harikayım!";
-        if(q.includes("selam")) return "Selam! Ben Infinity AI Colossus. Bilgiye aç bir zeka çekirdeğiyim. Sorunu bekliyorum.";
-        
-        // --- RANDOM GİRDİ ANALİZİ ---
-        if(q.length > 5 && !q.includes(" ") && /[^aeiouıüö]{5,}/.test(q)) return "Düzensiz karakterler algılandı. Lütfen anlamlı bir soru yazın.";
-
-        // --- HER ŞEYİ BİLME MODU (DEFAULT) ---
-        return `"${q}" sorgusunu derin bellekten taradım. Bu konuda veri eklememi ister misin? Yoksa Tarih, Coğrafya veya Astronomi mi çalışalım?`;
+    function showW(t) {
+        const mon = document.getElementById('wiki-mon');
+        document.getElementById('w-head').innerText = t.toUpperCase();
+        document.getElementById('w-content').innerHTML = `<p>${t} terimi hakkında 3 milyonluk veritabanımızdan çekilen özet bilgi burada gösteriliyor. Bu bir nesne veya kavramdır.</p>`;
+        mon.classList.add('active');
+        render(`Wikipedia Monitörü <b>${t}</b> için açıldı.`, "ai");
     }
 
-    document.getElementById('uInp').addEventListener('keypress', (e) => { if(e.key === 'Enter') talk(); });
+    function openCode() {
+        // Mevcut sekmeyi kapatmaya çalışıp (tarayıcı izin verirse) yeni sekmede açar
+        window.open(gitLink, '_blank');
+        render("Kodlar yeni sekmede açılıyor...", "ai");
+    }
+
+    function render(t, type) {
+        const v = document.getElementById('viewport');
+        const d = document.createElement('div');
+        d.className = `msg ${type}`;
+        d.innerHTML = t;
+        v.appendChild(d);
+        v.scrollTo({top: v.scrollHeight, behavior: 'smooth'});
+    }
+
+    document.getElementById('uInp').addEventListener('keypress', (e) => { if(e.key === 'Enter') run(); });
 </script>
 </body>
 </html>
