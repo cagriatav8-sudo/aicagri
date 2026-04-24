@@ -2,137 +2,157 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Infinity AI | Ultimate Flexible Engine</title>
+    <title>Infinity AI | Çağrı ATAV</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --emerald: #00ff41; --bg: #020202; --panel: #0d0d0d; --radius: 35px; }
-        * { box-sizing: border-box; transition: 0.3s; font-family: 'Segoe UI', sans-serif; }
+        :root { --emerald: #00ff41; --bg: #010101; --panel: #0d0d0d; --radius: 35px; }
+        * { box-sizing: border-box; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-family: 'Segoe UI', sans-serif; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; height: 100%; overflow: hidden; }
 
-        /* HEADER */
-        #top-bar { position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.9); display: flex; align-items: center; padding: 0 30px; border-bottom: 2px solid var(--emerald); z-index: 1000; }
+        /* --- HEADER --- */
+        #header { 
+            position: fixed; top: 0; width: 100%; height: 75px; 
+            background: rgba(0,0,0,0.95); display: flex; align-items: center; 
+            padding: 0 30px; border-bottom: 2px solid var(--emerald); z-index: 1000; 
+        }
+        .menu-btn { color: var(--emerald); font-size: 26px; cursor: pointer; margin-right: 20px; }
+
+        /* --- SIDEBAR --- */
+        #sidebar { 
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
+            background: var(--panel); z-index: 1001; padding: 100px 30px; 
+            border-right: 2px solid var(--emerald); box-shadow: 10px 0 30px #000;
+        }
+        #sidebar.active { left: 0; }
         
-        /* CHAT */
-        #viewport { height: 100vh; padding: 90px 15% 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
-        .msg { padding: 22px 30px; border-radius: var(--radius); max-width: 85%; font-size: 16px; line-height: 1.6; }
+        /* --- CHAT AREA --- */
+        #viewport { height: 100vh; padding: 100px 12% 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scrollbar-width: none; }
+        .bubble { padding: 22px 30px; border-radius: var(--radius); max-width: 85%; font-size: 16px; }
         .ai { background: rgba(0, 255, 65, 0.03); align-self: flex-start; border: 1px solid rgba(0, 255, 65, 0.1); border-bottom-left-radius: 5px; }
-        .user { background: #151515; align-self: flex-end; border-right: 5px solid var(--emerald); border-bottom-right-radius: 5px; }
+        .user { background: #111; align-self: flex-end; border-right: 5px solid var(--emerald); border-bottom-right-radius: 5px; }
 
-        /* WIKI MONITOR */
-        #wiki-mon { position: fixed; right: -600px; top: 90px; width: 500px; height: 75vh; background: #fff; color: #000; border-radius: 30px; padding: 40px; z-index: 900; border: 6px solid var(--emerald); overflow-y: auto; box-shadow: -20px 20px 60px #000; }
-        #wiki-mon.active { right: 30px; }
+        /* --- WIKIPEDIA MONITOR --- */
+        #wiki-panel { position: fixed; right: -600px; top: 90px; width: 500px; height: 78vh; background: #fff; color: #000; border-radius: 30px; padding: 40px; z-index: 900; border: 8px solid var(--emerald); overflow-y: auto; }
+        #wiki-panel.active { right: 30px; }
 
-        /* BUTTONS */
-        .btn-box { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .opt { background: transparent; border: 1.5px solid var(--emerald); color: var(--emerald); padding: 14px; border-radius: 20px; cursor: pointer; font-weight: bold; text-align: left; }
-        .opt:hover { background: var(--emerald); color: #000; }
+        /* --- SURVEY BUTTONS --- */
+        .survey-box { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+        .survey-btn { background: #000; border: 1.5px solid var(--emerald); color: var(--emerald); padding: 15px; border-radius: 20px; cursor: pointer; font-weight: 900; }
+        .survey-btn:hover { background: var(--emerald); color: #000; }
 
-        /* INPUT */
-        .input-nexus { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); width: 75%; background: #000; padding: 10px; border-radius: 60px; display: flex; border: 1px solid #333; }
+        /* --- INPUT --- */
+        .nexus { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); width: 75%; background: #000; padding: 10px; border-radius: 60px; display: flex; border: 1px solid #333; }
         #uInp { flex-grow: 1; background: transparent; border: none; color: #fff; padding: 10px 25px; outline: none; font-size: 18px; }
         .send-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--emerald); border: none; cursor: pointer; color: #000; }
 
-        /* ERROR LINK */
-        .err-link { text-decoration: underline; color: var(--emerald); cursor: pointer; font-weight: bold; display: block; margin-top: 10px; }
+        /* --- OFFLINE SCREEN --- */
+        #off-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .github-link { text-decoration: underline; color: var(--emerald); cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="top-bar">
-    <span style="font-weight: 900; letter-spacing: 2px; color: var(--emerald);">INFINITY AI ULTRA-FLEX v12</span>
+<div id="header">
+    <i class="fas fa-bars menu-btn" onclick="toggleMenu()"></i>
+    <span style="font-weight: 900; letter-spacing: 2px; color: var(--emerald);">INFINITY AI | ÇAĞRI ATAV</span>
 </div>
 
-<div id="wiki-mon">
-    <div style="text-align:right"><i class="fas fa-times" onclick="this.parentElement.parentElement.classList.remove('active')" style="cursor:pointer"></i></div>
-    <h1 id="w-head">Bilgi Ekranı</h1>
-    <div id="w-content"></div>
+<div id="sidebar">
+    <div style="background:#1a1a1a; padding:20px; border-radius:20px; margin-bottom:20px;">
+        <h4 style="color:var(--emerald); margin:0;">Geliştirici</h4>
+        <p style="font-size:14px;">Çağrı ATAV</p>
+    </div>
+    <p style="color:#666; font-size:12px;">Destek Hattı: 0541 211 39 40</p>
+    <button onclick="triggerOff()" style="width:100%; background:red; color:#fff; padding:15px; border-radius:15px; border:none; cursor:pointer; margin-top:20px;">Bağlantıyı Kes (Test)</button>
+</div>
+
+<div id="off-screen">
+    <i class="fas fa-infinity" style="font-size: 100px; color: var(--emerald);"></i>
+    <h1 style="margin-top:30px;">BAĞLANTI KESİLDİ</h1>
+    <p>Sistem şu an offline modda.</p>
+    <button onclick="location.reload()" style="background:var(--emerald); padding:15px 40px; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">SİSTEMİ YENİDEN BAŞLAT</button>
+</div>
+
+<div id="wiki-panel">
+    <div style="text-align:right"><i class="fas fa-times-circle" onclick="this.parentElement.parentElement.classList.remove('active')" style="cursor:pointer; font-size: 25px;"></i></div>
+    <h1 id="w-title">Başlık</h1>
+    <div id="w-body"></div>
 </div>
 
 <div id="viewport">
-    <div class="msg ai">Sistem %5000 esneklik modunda başlatıldı. Random (rastgele) karakterler, evet/hayır yanıtları ve tüm nesne tanımları aktif.</div>
+    <div class="bubble ai">
+        <strong>Infinity AI | Çağrı ATAV v15</strong> <br>
+        Üç çizgi (menü) geri getirildi. Esneklik %5000. <br>
+        Herhangi bir nesne için "tanımı" yaz, anketi açalım!
+    </div>
 </div>
 
-<div class="input-nexus">
-    <input type="text" id="uInp" placeholder="Bir şeyler yazın veya rastgele tuşlayın..." autofocus>
+<div class="nexus">
+    <input type="text" id="uInp" placeholder="Örn: Tahta tanımı..." autofocus autocomplete="off">
     <button class="send-btn" onclick="run()"><i class="fas fa-paper-plane"></i></button>
 </div>
 
 <script>
-    const gitLink = "https://github.com/cagriatav8-sudo/aicagri/blob/main/index.html";
+    const GIT = "https://github.com/cagriatav8-sudo/aicagri/blob/main/index.html";
+
+    function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+    function triggerOff() { document.getElementById('off-screen').style.display = 'flex'; }
 
     function run() {
         const inp = document.getElementById('uInp');
         const q = inp.value.trim();
         if(!q) return;
-
         render(q, 'user');
         inp.value = '';
 
         setTimeout(() => {
-            const lowQ = q.toLowerCase();
+            const low = q.toLowerCase();
+            const isRandom = /^[asdfghjklşiıüzxcvbnmöç]{6,}$/.test(low) || (low.length > 10 && !low.includes(" "));
 
-            // 1. RANDOM (RASTGELE) ANLAMA MODÜLÜ (%5000 ESNEKLİK)
-            const isRandom = /^[asdfghjklşiıüzxcvbnmöç]{5,}$/.test(lowQ) || (lowQ.length > 8 && !lowQ.includes(" "));
-            
             if(isRandom) {
-                render("İnfinity Aİ bir yapay zeka modeli olduğu için hata yaptı. <br><br> Destek koda destek vermek isterseniz: <br> <span class='err-link' onclick='openCode()'>destek_kodlari_github_linki</span>", "ai");
-                return;
+                showErr();
+            } else if(low.includes("tanımı") || low.includes("nedir")) {
+                const term = low.replace("tanımı","").replace("nedir","").trim();
+                showAnket(term);
+            } else if(low.match(/^(evet|hayır|evt|hayı|ok|tamam)$/)) {
+                render("Çağrı ATAV çekirdeği onayladı.", "ai");
+            } else {
+                showErr();
             }
-
-            // 2. EVET / HAYIR MODÜLÜ
-            if(lowQ === "evet" || lowQ === "hayır" || lowQ === "hayı" || lowQ === "evt") {
-                render(lowQ === "evet" || lowQ === "evt" ? "Harika! O zaman işleme devam ediyorum." : "Anlaşıldı, bu adımı atlıyoruz. Başka bir sorunuz var mı?", "ai");
-            }
-            // 3. TANIM MODÜLÜ (INTERAKTIF)
-            else if(lowQ.includes("tanımı") || lowQ.includes("nedir")) {
-                const term = lowQ.replace("tanımı","").replace("nedir","").trim();
-                ask(term);
-            }
-            // 4. GENEL SOHBET
-            else if(lowQ.match(/naber|selam|nasılsın/)) {
-                render("Sistem gayet esnek ve hızlı! Senin için 3 milyon soruluk havuzda her şeyi yapabilirim.", "ai");
-            }
-            // 5. BELİRSİZ DURUM (HATA MESAJI)
-            else {
-                render("İnfinity Aİ bir yapay zeka modeli olduğu için hata yaptı. <br><br> Destek koda destek vermek isterseniz: <br> <span class='err-link' onclick='openCode()'>destek_kodlari_github_linki</span>", "ai");
-            }
-        }, 600);
+        }, 500);
     }
 
-    function ask(t) {
-        const v = document.getElementById('viewport');
+    function showAnket(t) {
         const d = document.createElement('div');
-        d.className = 'msg ai';
+        d.className = 'bubble ai';
         d.innerHTML = `
-            <strong>"${t.toUpperCase()}"</strong> tanımı için seçim yapın:
-            <div class="btn-box">
-                <button class="opt" onclick="window.open('https://google.com/search?q=${t}', '_blank')">1. Siteye giderek öğren</button>
-                <button class="opt" onclick="showW('${t}')">2. Bu sitede öğren (Monitör)</button>
+            <strong>"${t.toUpperCase()}"</strong> için anket:
+            <div class="survey-box">
+                <button class="survey-btn" onclick="window.open('https://google.com/search?q=${t}', '_blank')">1. Siteye Git (Yeni Sekme)</button>
+                <button class="survey-btn" onclick="openWiki('${t}')">2. Wikipedia Monitörü</button>
             </div>
         `;
-        v.appendChild(d);
-        v.scrollTop = v.scrollHeight;
+        document.getElementById('viewport').appendChild(d);
+        document.getElementById('viewport').scrollTop = document.getElementById('viewport').scrollHeight;
     }
 
-    function showW(t) {
-        const mon = document.getElementById('wiki-mon');
-        document.getElementById('w-head').innerText = t.toUpperCase();
-        document.getElementById('w-content').innerHTML = `<p>${t} terimi hakkında 3 milyonluk veritabanımızdan çekilen özet bilgi burada gösteriliyor. Bu bir nesne veya kavramdır.</p>`;
-        mon.classList.add('active');
-        render(`Wikipedia Monitörü <b>${t}</b> için açıldı.`, "ai");
+    function openWiki(t) {
+        const p = document.getElementById('wiki-panel');
+        document.getElementById('w-title').innerText = t.toUpperCase();
+        document.getElementById('w-body').innerHTML = `<p>${t} nesnesi, Çağrı ATAV sistemindeki 3M+ veri havuzundan çekildi. Bu bir nesnedir.</p>`;
+        p.classList.add('active');
+        render(`Monitör yüklendi: <b>${t}</b>`, "ai");
     }
 
-    function openCode() {
-        // Mevcut sekmeyi kapatmaya çalışıp (tarayıcı izin verirse) yeni sekmede açar
-        window.open(gitLink, '_blank');
-        render("Kodlar yeni sekmede açılıyor...", "ai");
+    function showErr() {
+        render(`İnfinity Aİ bir yapay zeka modeli olduğu için hata yaptı.<br><br>Destek koda destek vermek isterseniz:<br><span class="github-link" onclick="window.open('${GIT}', '_blank')">destek_kodlari_github_linki</span>`, "ai");
     }
 
-    function render(t, type) {
+    function render(text, type) {
         const v = document.getElementById('viewport');
         const d = document.createElement('div');
-        d.className = `msg ${type}`;
-        d.innerHTML = t;
+        d.className = `bubble ${type}`;
+        d.innerHTML = text;
         v.appendChild(d);
         v.scrollTo({top: v.scrollHeight, behavior: 'smooth'});
     }
